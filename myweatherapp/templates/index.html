@@ -1,0 +1,7 @@
+{% extends 'page.html' %}
+
+{% block body %}
+  <div class="title centered">Nice weather at CERN!</div>
+  <div class="logo centered"><img src="{{ url_for('static', filename='img/cern-logo.png') }}"></div>
+  <p>Current IP address: {{ current_ip }}</p>
+{% endblock %}
