@@ -37,11 +37,7 @@ def create_app():
                 values['q'] = int(os.stat(file_path).st_mtime)
         return url_for(endpoint, **values)
 
-
-    # DB
-    if 'SQLALCHEMY_DATABASE_URI' not in app.config:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-
+    # Extensions registration
     db = SQLAlchemy(app)
     db.init_app(app)
 
