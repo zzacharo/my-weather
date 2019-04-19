@@ -5,9 +5,9 @@ setup(
     packages=['todoapp'],
     include_package_data=True,
     install_requires=[
-        'Flask',
-        'Flask-SQLAlchemy',
-        'psycopg2'
+        'Flask>=1.0.2',
+        'Flask-SQLAlchemy>=2.3.2',
+        'requests>=2.21'
     ],
     setup_requires=[
         'pytest-runner',

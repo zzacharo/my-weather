@@ -1,6 +1,8 @@
 from flask import Blueprint, abort, current_app, render_template, request
 from jinja2 import TemplateNotFound
 
+from myweatherapp.location.api import LocationResolver
+
 blueprint = Blueprint(
     'myweatherapp_web',
     __name__,
@@ -18,9 +20,11 @@ def page_not_found(e):
 def home():
     current_ip = current_app.config['TEST_IP'] if \
         current_app.config['DEBUG'] else request.remote_addr
+
+    location = LocationResolver.resolve(current_ip)
     try:
         return render_template(
-            'index.html', current_ip=current_ip
+            'index.html', location=location, current_ip=current_ip
         )
     except TemplateNotFound:
         abort(404)
