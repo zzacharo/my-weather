@@ -2,6 +2,7 @@ from flask import Blueprint, abort, current_app, render_template, request
 from jinja2 import TemplateNotFound
 
 from myweatherapp.location.api import LocationResolver
+from myweatherapp.location.error import NotFoundLocationError
 
 blueprint = Blueprint(
     'myweatherapp_web',
@@ -15,6 +16,10 @@ blueprint = Blueprint(
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
+@blueprint.errorhandler(NotFoundLocationError)
+def page_location_not_found(e):
+    return render_template('not_found_location.html'), 404
 
 @blueprint.route('/')
 def home():

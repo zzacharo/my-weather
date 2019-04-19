@@ -1,10 +1,6 @@
 import requests
 
-class NotFoundLocationError(Exception):
-
-    def __init__(self, msg):
-        """."""
-        self.msg = msg
+from myweatherapp.location.error import NotFoundLocationError
 
 class LocationResolver(object):
     """."""
@@ -15,7 +11,7 @@ class LocationResolver(object):
     def resolve(cls, ip_address):
         """."""
         res = requests.get(cls.IPAPI_WEBAPI_URL.format(ip_address=ip_address))
-        if res.ok:
+        if not res.ok:
             json = res.json()
             return json.get("city")
         else:
