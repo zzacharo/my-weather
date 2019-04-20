@@ -3,6 +3,7 @@ from jinja2 import TemplateNotFound
 
 from myweatherapp.location.api import LocationResolver
 from myweatherapp.location.error import NotFoundLocationError
+from myweatherapp.error import BadRequestError
 
 blueprint = Blueprint(
     'myweatherapp_web',
@@ -14,12 +15,19 @@ blueprint = Blueprint(
 
 @blueprint.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('errors/404.html'), 404
 
 
 @blueprint.errorhandler(NotFoundLocationError)
 def page_location_not_found(e):
-    return render_template('not_found_location.html'), 404
+    return render_template(
+        'errors/not_found_location.html', error_msg=e.msg), 404
+
+
+@blueprint.errorhandler(BadRequestError)
+def page_location_not_found(e):
+    return render_template('errors/error.html', error_msg=e.msg), 404
+
 
 @blueprint.route('/')
 def home():

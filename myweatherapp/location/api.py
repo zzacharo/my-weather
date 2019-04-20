@@ -1,6 +1,7 @@
 import requests
 
 from myweatherapp.location.error import NotFoundLocationError
+from myweatherapp.error import BadRequestError
 
 class LocationResolver(object):
     """."""
@@ -11,10 +12,14 @@ class LocationResolver(object):
     def resolve(cls, ip_address):
         """."""
         res = requests.get(cls.IPAPI_WEBAPI_URL.format(ip_address=ip_address))
-        if not res.ok:
+        if res.ok:
             json = res.json()
-            return json.get("city")
+            if "city" in json:
+                return json["city"]
+            else:
+                raise NotFoundLocationError(
+                    msg="Location for ip {value} not found".format(
+                        value=ip_address))
         else:
-            raise NotFoundLocationError(
-                msg="Location for ip {value} not found".format(
-                    value=ip_address))
+            raise BadRequestError(
+                msg="Something went wrong!")
