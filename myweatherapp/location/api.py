@@ -8,10 +8,9 @@ class LocationResolver(object):
 
     IPAPI_WEBAPI_URL = "https://ipapi.co/{ip_address}/json/"
 
-    @classmethod
-    def resolve(cls, ip_address):
+    def resolve(self, ip_address):
         """."""
-        res = requests.get(cls.IPAPI_WEBAPI_URL.format(ip_address=ip_address))
+        res = requests.get(self.IPAPI_WEBAPI_URL.format(ip_address=ip_address))
         if res.ok:
             json = res.json()
             if "city" in json:
