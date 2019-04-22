@@ -1,8 +1,39 @@
 {% extends 'page.html' %}
 
 {% block body %}
-  <div class="title centered">{{weather_status}} at {{ location }}!</div>
+  <div id="root"></div>
   <div class="logo centered"><img src="{{ url_for('static', filename='img/cern-logo.png') }}"></div>
-  <p>Current IP address: {{ current_ip }}</p>
-  <p></p>
+{% endblock %}
+
+{% block javascript %}
+  <script type="text/babel">
+    class Weather extends React.Component {
+      constructor(props) {
+        super(props);
+
+        this.state = {
+          data: {},
+        };
+      }
+
+      componentDidMount() {
+        fetch('/api/weather')
+          .then(response => response.json())
+          .then(data => this.setState({ data: data }));
+      }
+
+      render() {
+          const { weather_status, location } = this.state.data;
+
+          if (location && weather_status) {
+            return <div class="title centered">Today the weather in { location } is { weather_status } !</div>;
+          }
+          return null;
+      }
+    }
+    ReactDOM.render(
+        <Weather />,
+        document.getElementById('root')
+    );
+  </script>
 {% endblock %}

@@ -1,10 +1,6 @@
 from flask import Blueprint, abort, current_app, render_template, request
 from jinja2 import TemplateNotFound
 
-from myweatherapp.error import BadRequestError
-from myweatherapp.location.api import LocationResolver
-from myweatherapp.location.error import NotFoundLocationError
-from myweatherapp.weather.api import WeatherResolver
 
 ui_blueprint = Blueprint(
     'myweatherapp_ui',
@@ -13,9 +9,11 @@ ui_blueprint = Blueprint(
     static_folder='static'
 )
 
+
 @ui_blueprint.errorhandler(404)
 def page_not_found(e):
     return render_template('errors/404.html'), 404
+
 
 @ui_blueprint.route('/')
 def home():
