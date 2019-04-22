@@ -28,8 +28,6 @@ class WeatherResolver(object):
             db.session.commit()
             return weather
         else:
-            from flask import current_app
-            current_app.logger.info("weather found in db")
             return weather_today
 
     def search(self, location):
