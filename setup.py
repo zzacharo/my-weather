@@ -1,9 +1,14 @@
 from setuptools import setup
 
 setup(
-    name='todoapp',
-    packages=['todoapp'],
+    name='myweatherapp',
     include_package_data=True,
+    packages=['myweatherapp'],
+    entry_points={
+        'flask.commands': [
+            'weather = myweatherapp.cli:cli'
+        ]
+    },
     install_requires=[
         'Flask>=1.0.2',
         'Flask-SQLAlchemy>=2.3.2',
@@ -11,6 +16,7 @@ setup(
     ],
     setup_requires=[
         'pytest-runner',
+
     ],
     tests_require=[
         'pytest',

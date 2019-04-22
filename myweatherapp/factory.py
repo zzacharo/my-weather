@@ -3,12 +3,14 @@ import os
 from flask import Flask, render_template, url_for
 from flask_sqlalchemy import SQLAlchemy
 
-from myweatherapp.views import blueprint as main_blueprint
 
 app = Flask(__name__)
+# Extensions registration
+db = SQLAlchemy(app)
 
 def create_app():
     """Application creation factory."""
+    from myweatherapp.views import blueprint as main_blueprint
 
 
     # Config
@@ -17,7 +19,6 @@ def create_app():
         CFG_SITE_NAME='myweatherapp',
     )
     app.config.from_pyfile('config.py', silent=True)
-
 
     @app.errorhandler(404)
     def page_not_found(e):
@@ -36,10 +37,6 @@ def create_app():
                 file_path = os.path.join(app.root_path, endpoint, filename)
                 values['q'] = int(os.stat(file_path).st_mtime)
         return url_for(endpoint, **values)
-
-    # Extensions registration
-    db = SQLAlchemy(app)
-    db.init_app(app)
 
     # Blueprints
     app.register_blueprint(main_blueprint)
