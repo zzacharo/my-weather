@@ -12,9 +12,9 @@ class WeatherResolver(object):
 
     WEATHER_WEBAPI_BASE_URL = "https://www.metaweather.com/api/location"
 
-    def resolve(self, ip_location):
-        """."""
-        location = LocationResolver().resolve(ip_location)
+    def resolve(self, ip_address):
+        """Resolve weather given ip address."""
+        location = LocationResolver().resolve(ip_address)
         today = date.today().isoformat()
         # hash the combination of city and day to make an effective search
         # on db as hash version is used as primary key
@@ -31,10 +31,10 @@ class WeatherResolver(object):
             return weather_today
 
     def search(self, location):
-        """."""
-        search_url = "{base}/search/?query={q}".format(
+        """Search weather API for location."""
+        WEATHER_WEBAPI_SEARCH_URL = "{base}/search/?query={q}".format(
             base=self.WEATHER_WEBAPI_BASE_URL, q=location)
-        res = requests.get(search_url)
+        res = requests.get(WEATHER_WEBAPI_SEARCH_URL)
         if res.ok:
             json = res.json()
             if json:
@@ -47,11 +47,11 @@ class WeatherResolver(object):
                 msg="Something went wrong!")
 
     def get_todays_weather(self, woeid):
-        """."""
-        WEATHER_WEBAPI_DEATAILS_URL = "{base}/{id}/".format(
+        """Given location woeid retrieve current weather."""
+        WEATHER_WEBAPI_DETAILS_URL = "{base}/{id}/".format(
             base=self.WEATHER_WEBAPI_BASE_URL,
             id=woeid)
-        res = requests.get(WEATHER_WEBAPI_DEATAILS_URL)
+        res = requests.get(WEATHER_WEBAPI_DETAILS_URL)
         if res.ok:
             json = res.json()
             if json.get("details") == "Not found.":
