@@ -1,7 +1,10 @@
 import requests
 
+from datetime import date
 from myweatherapp.error import BadRequestError
 from myweatherapp.weather.error import NotFoundWeatherError
+from myweatherapp.models import Weather
+from myweatherapp.factory import db
 
 class WeatherResolver(object):
     """."""
@@ -10,8 +13,22 @@ class WeatherResolver(object):
 
     def resolve(self, location):
         """."""
-        woeid = self.search(location)
-        return self.get_today_weather(woeid)["weather_state_name"]
+        today = date.today().isoformat()
+        # hash the combination of city and day to make an effective search
+        # on db
+        hash_id = hash("{}/{}".format(location, today))
+        weather_today = Weather.query.filter_by(id_=hash_id).first()
+        if not weather_today:
+            woeid = self.search(location)
+            weather_status = self.get_today_weather(woeid)["weather_state_name"]
+            weather = Weather(hash_id, weather_status, location, today)
+            db.session.add(weather)
+            db.session.commit()
+            return weather_status
+        else:
+            from flask import current_app
+            current_app.logger.info("weather found in db")
+            return weather_today.status
 
     def search(self, location):
         """."""
