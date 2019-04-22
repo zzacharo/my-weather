@@ -10,8 +10,8 @@ db = SQLAlchemy(app)
 
 def create_app():
     """Application creation factory."""
-    from myweatherapp.views import blueprint as main_blueprint
-
+    from myweatherapp.views import ui_blueprint
+    from myweatherapp.api import api_blueprint
 
     # Config
     app._static_folder = 'static'
@@ -39,6 +39,7 @@ def create_app():
         return url_for(endpoint, **values)
 
     # Blueprints
-    app.register_blueprint(main_blueprint)
+    app.register_blueprint(ui_blueprint)
+    app.register_blueprint(api_blueprint, url_prefix='/api')
 
     return app
