@@ -22,3 +22,10 @@ class Weather(db.Model):
         self.status = status
         self.location = location
         self.day = day
+
+    def dumps(self):
+        return {
+            "weather_status": self.status,
+            "location": self.location,
+            "date": self.day
+        }

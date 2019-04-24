@@ -1,5 +1,7 @@
 import requests
+import json
 
+from flask import current_app
 from datetime import date
 from myweatherapp.error import BadRequestError
 from myweatherapp.weather.error import NotFoundWeatherError
@@ -19,16 +21,25 @@ class WeatherResolver(object):
         # hash the combination of city and day to make an effective search
         # on db as hash version is used as primary key
         hash_id = hash("{}/{}".format(location, today))
-        weather_today = Weather.query.filter_by(id_=hash_id).one_or_none()
-        if not weather_today:
-            woeid = self.search(location)
-            weather_status = self.get_todays_weather(woeid)["weather_state_name"]
-            weather = Weather(hash_id, weather_status, location, today)
-            db.session.add(weather)
-            db.session.commit()
+        cache = current_app.config['cache']
+        try:
+            weather = json.loads(cache.get(str(hash_id)).decode())
             return weather
-        else:
-            return weather_today
+        except KeyError as e:
+            weather_today = Weather.query.filter_by(id_=hash_id).one_or_none()
+            if not weather_today:
+                woeid = self.search(location)
+                weather_status = self.get_todays_weather(woeid)["weather_state_name"]
+                weather = Weather(hash_id, weather_status, location, today)
+                db.session.add(weather)
+                db.session.commit()
+                # update cache
+                cache.put(str(hash_id), json.dumps(weather.dumps()).encode())
+                return weather.dumps()
+            else:
+                # update cache
+                cache.put(str(hash_id), json.dumps(weather_today.dumps()).encode())
+                return weather_today.dumps()
 
     def search(self, location):
         """Search weather API for location."""

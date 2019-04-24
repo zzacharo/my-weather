@@ -2,6 +2,8 @@ import os
 
 from flask import Flask, render_template, url_for
 from flask_sqlalchemy import SQLAlchemy
+from simplekv.memory.redisstore import RedisStore
+import redis
 
 
 app = Flask(__name__)
@@ -19,6 +21,7 @@ def create_app():
         CFG_SITE_NAME='myweatherapp',
     )
     app.config.from_pyfile('config.py', silent=True)
+    app.config['cache'] = RedisStore(redis.StrictRedis())
 
     @app.errorhandler(404)
     def page_not_found(e):

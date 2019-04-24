@@ -12,7 +12,9 @@ setup(
     install_requires=[
         'Flask>=1.0.2',
         'Flask-SQLAlchemy>=2.3.2',
-        'requests>=2.21'
+        'requests>=2.21',
+        'simplekv>=0.12.0',
+        'redis>=3.2.1'
     ],
     setup_requires=[
         'pytest-runner',

@@ -13,15 +13,6 @@ api_blueprint = Blueprint(
 )
 
 
-def serialize_weather(weather):
-    """Weather serializer."""
-    return {
-        "weather_status": weather.status,
-        "location": weather.location,
-        "date": weather.day
-    }
-
-
 def serialize_error(error):
     return {
         "message": error.msg
@@ -43,4 +34,4 @@ def index():
         weather = WeatherResolver().resolve(current_ip)
     except (BadRequestError, NotFoundLocationError, NotFoundWeatherError) as e:
         return make_response(serialize_error(e), e.code)
-    return make_response(serialize_weather(weather), 200)
+    return make_response(weather, 200)
