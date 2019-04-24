@@ -13,6 +13,7 @@ class LocationResolver(object):
         """."""
         cache = current_app.config['cache']
         try:
+            # check for result in cache first
             location = cache.get(ip_address).decode()
             return location
         except KeyError as e:
@@ -20,6 +21,7 @@ class LocationResolver(object):
             if res.ok:
                 json = res.json()
                 if "city" in json:
+                    # update cache
                     cache.put(ip_address, json["city"].encode())
                     return json["city"]
                 else:

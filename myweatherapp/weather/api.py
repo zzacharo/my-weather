@@ -23,6 +23,7 @@ class WeatherResolver(object):
         hash_id = hash("{}/{}".format(location, today))
         cache = current_app.config['cache']
         try:
+            # check for result in cache first
             weather = json.loads(cache.get(str(hash_id)).decode())
             return weather
         except KeyError as e:
